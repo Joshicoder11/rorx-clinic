@@ -1,25 +1,14 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret';
-const SALT_ROUNDS = 10;
+export function verifyToken(token: string) {
+  return jwt.verify(token, process.env.JWT_SECRET!);
+}
 
-export const hashPassword = async (password: string): Promise<string> => {
-  return bcrypt.hash(password, SALT_ROUNDS);
-};
-
-export const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
+export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash);
-};
+}
 
-export const createToken = (payload: object): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-};
-
-export const verifyToken = (token: string): any => {
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-};
+export function createToken(payload: object) {
+  return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1h" });
+}
